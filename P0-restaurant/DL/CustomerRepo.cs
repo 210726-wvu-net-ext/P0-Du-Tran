@@ -9,10 +9,7 @@ namespace DL
 public class CustomerRepo : ICustomerRepo
 {
     private P0_RestaurantRContext _context;
-    public CustomerRepo(P0_RestaurantRContext context)
-    {
-        _context = context;
-    }
+    public CustomerRepo(P0_RestaurantRContext context) => _context = context;
     public List<Models.Customer> GetAllCustomers()
     {
         return _context.Customers.Select(
@@ -35,10 +32,10 @@ public class CustomerRepo : ICustomerRepo
         return customer;
     }
 
-    public Models.Customer searchUsersByName(string lastname)
+    public Models.Customer searchUsersByName(string firstname)
     {
         Entities.Customer foundCustomer = _context.Customers
-            .FirstOrDefault(customer => customer.LastName == lastname);
+            .FirstOrDefault(customer => customer.FirstName == firstname);
         if(foundCustomer != null)
         {
             return new Models.Customer(foundCustomer.Id, foundCustomer.FirstName, foundCustomer.LastName, foundCustomer.UserName, foundCustomer.Email);

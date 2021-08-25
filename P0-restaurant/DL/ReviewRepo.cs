@@ -30,7 +30,7 @@ namespace DL
         public List<Models.Review> GetReview()
         {
             return _context.Reviews.Select(
-                review => new Models.Review(review.Id, review.Comment, review.Rating)
+                review => new Models.Review(review.Id, review.Comment, review.Rating, review.Time)
             ).ToList();
         }
 
@@ -40,7 +40,7 @@ namespace DL
                 .FirstOrDefault(review => review.Id == id);
             if(foundReview != null)
             {
-                return new Models.Review(foundReview.Id, foundReview.Comment, foundReview.Rating);
+                return new Models.Review(foundReview.Id, foundReview.Comment, foundReview.Rating, foundReview.Time);
             }
             return new Models.Review();
         }

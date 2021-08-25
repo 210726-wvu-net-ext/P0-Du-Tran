@@ -17,7 +17,7 @@ namespace UI
             _reviewbl = rebl;
             _reviewjoinbl = rejbl;
         }
-        
+
         public void Start()
         {
             bool repeat = true;
@@ -28,6 +28,7 @@ namespace UI
                 Console.WriteLine("[1] Add a User");
                 Console.WriteLine("[2] Find Restaurants");
                 Console.WriteLine("[3] Add a Review");
+                Console.WriteLine("[4] Admin");
                 //Console.WriteLine("[43] Search User");
 
                 switch(Console.ReadLine())
@@ -45,16 +46,29 @@ namespace UI
                         FindARestaurant();
                     break;
 
-                    case "43":
-                        searchUsersByName();//admin
-                    break;
-
                     case "3":
                         AddAReview();
                     break;
 
+                    //case "4":
+                    //    ViewAllCustomers();
+                    //break;
                     case "4":
-                        ViewAllCustomers();
+                        Console.WriteLine("Please enter password");
+                        switch(Console.ReadLine())
+                        {
+                            case "40":
+                                Console.WriteLine("Welcome, to search users please enter one of the clue which could be name or username");
+                                searchUsersByName();
+                                break;
+                            default:
+                                Console.WriteLine("your password is wrong! :(");
+                                break;
+                        }
+                    break;
+
+                    case "43":
+                        searchUsersByName();//admin
                     break;
 
                     default:
@@ -97,6 +111,9 @@ namespace UI
         /// </summary>
         private void FindARestaurant()
         {
+            Console.WriteLine("[1] Search restaurant by name\n[2] Search restaurant by zipcode");
+        switch(Console.ReadLine())
+        {   case "1":
             string input;
             Console.WriteLine("Enter the name of the restaurant to search: ");
             input = Console.ReadLine();
@@ -140,8 +157,29 @@ namespace UI
                 decimal average1 = Math.Round(average,2);
                 Console.WriteLine("---------------------------");
                 Console.WriteLine($"Average Rating: {average1}");
-            }
                 Console.WriteLine("---------------------------");
+            }
+                
+                break;
+
+            case "2":
+                string input1;
+                Console.WriteLine("Enter Zipcode of the restaurant to search: ");
+                input1 = Console.ReadLine();
+                List<Restaurant> restaurants = _restaurantbl.ViewAllRestaurants();
+                for (int i = 0; i<restaurants.Count; i++)
+                {
+                    if(restaurants[i].Zipcode == input1)
+                    Console.WriteLine($"[{i}]{restaurants[i].Name} | {restaurants[i].Location} | Phone number: {restaurants[i].Contact}");
+                    Console.WriteLine("---------------------------");
+                }
+                break;
+            
+            default:
+                Console.WriteLine("The restaurant you are trying to search is not in our list. Sorry!");
+                break;
+            }
+        
         }
 
         private void searchUsersByName()
@@ -156,7 +194,19 @@ namespace UI
                 Console.WriteLine($"Noone with {input} in the list");
             }
             else{
-                Console.WriteLine(foundCustomer.FirstName + " " + foundCustomer.LastName + " " + foundCustomer.UserName + " " + foundCustomer.Email);
+                Console.WriteLine(foundCustomer.FirstName + " " + foundCustomer.LastName + " | " + foundCustomer.UserName + " | " + foundCustomer.Email);
+                Console.WriteLine("------------------------------------");
+                Console.WriteLine("Reviews this user put on restaurants");
+                List<ReviewJoin> reviewjoins = _reviewjoinbl.ViewReviewJoins();
+                for(int i = 0; i < reviewjoins.Count; i++)
+                {
+                    if(reviewjoins[i].CustomerId==foundCustomer.Id)
+                    {
+                        Review foundReview = _reviewbl.SearchReviewByReviewId(reviewjoins[i].ReviewId);
+                        Restaurant foundRestaurant = _restaurantbl.FindARestaurantById(reviewjoins[i].RestaurantId);
+                        Console.WriteLine($"{foundRestaurant.Name} | {foundReview.Comment}");
+                    }
+                }
             }
         }
 
@@ -167,31 +217,63 @@ namespace UI
         /// </summary>
         private void AddAReview()
         {
-            List<Customer> customers = _customerbl.ViewAllCustomers();
-            List<Review> reviews = _reviewbl.ViewReview();
-            List<ReviewJoin> reviewjoins = _reviewjoinbl.ViewReviewJoins();
-  
-            Console.WriteLine("Please enter your last name");
-            string input1 = Console.ReadLine();
-            Customer foundCustomer = _customerbl.searchUsersByName(input1); //foundCustomer.Id;
+            Console.WriteLine("To add reviews, you must be a member with us. Do you want to keep adding?");
+            Console.WriteLine("[1] Keep adding \n[2] Sign-up to be a member\n[3] Exit");
+            switch(Console.ReadLine()){
+                case "1":
+                string input1;
+                string input2;
+                string input3;
+                string input4;
 
-            Console.WriteLine("Please enter restarant to add review");
-            string input2 = Console.ReadLine();
-            Restaurant foundRestaurant = _restaurantbl.FindARestaurant(input2);//foundRestaurant.Id
+                List<Customer> customers = _customerbl.ViewAllCustomers();
+                List<Review> reviews = _reviewbl.ViewReview();
+                List<ReviewJoin> reviewjoins = _reviewjoinbl.ViewReviewJoins();
 
-            Console.WriteLine("Please add your review");
-            string input3 = Console.ReadLine();
-            Console.WriteLine("Please add your rating");
-            string input4 = Console.ReadLine();
-  
+                
+                do{Console.WriteLine("Please enter your last name");
+                input1 = Console.ReadLine();}while(String.IsNullOrWhiteSpace(input1));
+                Customer foundCustomer = _customerbl.searchUsersByName(input1); //foundCustomer.Id;
+                if (foundCustomer.FirstName is null) Console.WriteLine("You are not a member with us :(");
+
+                else{
+                do{Console.WriteLine("Please enter restarant to add review");
+                input2 = Console.ReadLine();}while(String.IsNullOrWhiteSpace(input2));
+                Restaurant foundRestaurant = _restaurantbl.FindARestaurant(input2);//foundRestaurant.Id
+                if (foundRestaurant.Name is null) Console.WriteLine("The restaurant you choose is not in our list :(");
+
+                
+                else{
+                do{Console.WriteLine("Please add your review");
+                input3 = Console.ReadLine();}while(String.IsNullOrWhiteSpace(input3));
+
+                Console.WriteLine("Please add your rating from 1 to 5");
+                  
+                input4 = Console.ReadLine();
+                while ((Convert.ToDecimal(input4)>5 || Convert.ToDecimal(input4)<=0))
+                {Console.WriteLine("You rating is out of range. Please enter again");
+                input4 = Console.ReadLine();}
+                
+
                 int c = reviews[reviews.Count-1].Id; //reviewId
-                Review reviewToAdd = new Review(c+1, input3, input4);
+                Review reviewToAdd = new Review(c+1, input3, input4, DateTime.Now);
                 reviewToAdd = _reviewbl.AddReview(reviewToAdd);
                 
                 ReviewJoin reviewjoinToAdd = new ReviewJoin(foundRestaurant.Id, foundCustomer.Id, c+1);
                 reviewjoinToAdd = _reviewjoinbl.AddAReviewJoin(reviewjoinToAdd);
-                Console.WriteLine("your review had been added.");                 
+                Console.WriteLine("your review had been added.");}}
+                    break;
+                case "2":
+                    AddAUser();
+                    break;
+                case "3":
+                    Console.WriteLine("Thank you for your visiting!");
+                    break;
+        
+            }
         }
+                             
+        
 
         private void ViewAllCustomers()
         {

@@ -7,5 +7,7 @@ namespace DL
     {
          Restaurant FindARestaurant(string name);
          List<Restaurant> GetAllRestaurants();
+         Restaurant FindARestaurantById(int id);
+         Restaurant FindARestaurantByZipcode(string zipcode);
     }
 }

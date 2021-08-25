@@ -7,5 +7,8 @@ namespace BL
     {
         Restaurant FindARestaurant(string name);
         List<Restaurant> ViewAllRestaurants();
+        Restaurant FindARestaurantById(int id);
+        Restaurant FindARestaurantByZipcode(string zipcode);
+
     }
 }

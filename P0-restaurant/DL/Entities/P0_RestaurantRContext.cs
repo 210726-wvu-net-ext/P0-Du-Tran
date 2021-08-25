@@ -69,6 +69,11 @@ namespace DL.Entities
                     .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Zipcode)
+                    .IsRequired()
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Review>(entity =>

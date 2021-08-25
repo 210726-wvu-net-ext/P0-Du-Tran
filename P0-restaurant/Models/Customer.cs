@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Models
 {
     public class Customer
@@ -22,8 +20,7 @@ namespace Models
         public string FirstName {get; set;}
         public string Email{get; set;}
         public string UserName {get; set;}
-        public List<Review> Reviews {get;set;}
-        public List<Restaurant> Restaurants {get; set;}
+
     }
 
 }

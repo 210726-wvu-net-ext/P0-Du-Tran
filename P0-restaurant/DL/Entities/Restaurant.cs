@@ -16,6 +16,7 @@ namespace DL.Entities
         public string Name { get; set; }
         public string Location { get; set; }
         public string Contact { get; set; }
+        public string Zipcode { get; set; }
 
         public virtual ICollection<ReviewJoin> ReviewJoins { get; set; }
     }

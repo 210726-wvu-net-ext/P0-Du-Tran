@@ -19,6 +19,14 @@ namespace BL
         {
             return _repo.GetAllRestaurants();
         }
+        public Restaurant FindARestaurantById(int id)
+        {
+            return _repo.FindARestaurantById(id);
+        }
+        public Restaurant FindARestaurantByZipcode(string zipcode)
+        {
+            return _repo.FindARestaurantByZipcode(zipcode);
+        }
 
     }
 }
