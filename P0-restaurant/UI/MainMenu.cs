@@ -183,6 +183,9 @@ namespace UI
             }
         
         }
+        
+        //try to seperate the rating average
+        
 
         private void searchUsersByName()
         {
