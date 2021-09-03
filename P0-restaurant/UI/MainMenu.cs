@@ -181,6 +181,14 @@ namespace UI
             }
         
         }
+        private AverageRating()
+        {
+            int sum = 0;
+            int n = 0;
+            List<Restaurant> restaurants = _restaurantbl.ViewAllRestaurants();
+            n = restaurants.Count;
+            AverageRating = sum/n;
+        }
 
         private void searchUsersByName()
         {
