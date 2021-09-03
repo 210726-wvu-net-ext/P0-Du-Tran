@@ -112,8 +112,10 @@ namespace UI
         private void FindARestaurant()
         {
             Console.WriteLine("[1] Search restaurant by name\n[2] Search restaurant by zipcode");
-        switch(Console.ReadLine())
-        {   case "1":
+            
+            //find a restaurant by 2 options
+            switch(Console.ReadLine())
+            {   case "1":
             string input;
             Console.WriteLine("Enter the name of the restaurant to search: ");
             input = Console.ReadLine();
