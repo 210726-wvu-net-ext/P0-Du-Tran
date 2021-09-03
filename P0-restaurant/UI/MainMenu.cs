@@ -112,14 +112,16 @@ namespace UI
         private void FindARestaurant()
         {
             Console.WriteLine("[1] Search restaurant by name\n[2] Search restaurant by zipcode");
-            
+            string input;
             //find a restaurant by 2 options
             switch(Console.ReadLine())
             {   case "1":
-            string input;
+            
             Console.WriteLine("Enter the name of the restaurant to search: ");
             input = Console.ReadLine();
-
+            if(input == '') {
+                Console.Writeline("You wrote an empty search")
+            }
             Restaurant foundRestaurant = _restaurantbl.FindARestaurant(input);
             if(foundRestaurant.Name is null)
             {
@@ -128,38 +130,7 @@ namespace UI
             else {
                 Console.WriteLine($"{foundRestaurant.Name}\nAddress: {foundRestaurant.Location}\nContact: {foundRestaurant.Contact}");
                 Console.WriteLine("---------------------------");
-
-                decimal sum = 0;
-                int n = 0;
-                decimal average = 1;
-                List<ReviewJoin> reviewjoins = _reviewjoinbl.ViewReviewJoins();
-
-                Console.WriteLine("REVIEWS");
-                for(int i = 0; i < reviewjoins.Count; i++)
-                {
-                    if(reviewjoins[i].RestaurantId==foundRestaurant.Id)
-                    {
-                    //Console.WriteLine(reviewjoins[i].ReviewId);
-                    Review foundReview = _reviewbl.SearchReviewByReviewId(reviewjoins[i].ReviewId);
-                    Console.WriteLine($"{foundReview.Comment} {foundReview.Time}");
-                    sum += Convert.ToDecimal(foundReview.Rating);
-                    n += 1;    
-                    }
-                }
-                
-                try
-                {
-                    average = (sum/n);
-                }
-                catch(DivideByZeroException)
-                {
-                    Console.WriteLine("Division of {0} by zero.", sum);
-                }
-                
-                decimal average1 = Math.Round(average,2);
-                Console.WriteLine("---------------------------");
-                Console.WriteLine($"Average Rating: {average1}");
-                Console.WriteLine("---------------------------");
+                DisplayAvgRating(foundRestaurant);
             }
                 
                 break;
@@ -185,7 +156,40 @@ namespace UI
         }
         
         //try to seperate the rating average
-        
+        private DisplayAvgRating(Restaurant foundRestaurant)
+        {
+            decimal sum = 0;
+                int n = 0;
+                decimal average = 1;
+                List<ReviewJoin> reviewjoins = _reviewjoinbl.ViewReviewJoins();
+                Console.WriteLine("REVIEWS");
+
+                for(int i = 0; i < reviewjoins.Count; i++)
+                {
+                    if(reviewjoins[i].RestaurantId==foundRestaurant.Id)
+                    {
+                    //Console.WriteLine(reviewjoins[i].ReviewId);
+                    Review foundReview = _reviewbl.SearchReviewByReviewId(reviewjoins[i].ReviewId);
+                    Console.WriteLine($"{foundReview.Comment} {foundReview.Time}");
+                    sum += Convert.ToDecimal(foundReview.Rating);
+                    n += 1;    
+                    }
+                }
+                
+                try
+                {
+                    average = (sum/n);
+                }
+                catch(DivideByZeroException)
+                {
+                    Console.WriteLine("Division of {0} by zero.", sum);
+                }
+                
+                decimal average1 = Math.Round(average,2);
+                Console.WriteLine("---------------------------");
+                Console.WriteLine($"Average Rating: {average1}");
+                Console.WriteLine("---------------------------");
+        }
 
         private void searchUsersByName()
         {
